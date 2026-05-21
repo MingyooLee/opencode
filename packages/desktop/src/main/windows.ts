@@ -7,6 +7,9 @@ import { PINCH_ZOOM_ENABLED_KEY } from "./constants"
 import { exportDebugLogs, write as writeLog } from "./logging"
 import { getStore } from "./store"
 import { createUnresponsiveSampler } from "./unresponsive"
+import { resolveThemeVariant } from "@opencode-ai/ui/theme/resolve"
+import type { DesktopTheme } from "@opencode-ai/ui/theme/types"
+import oc2ThemeJson from "../../../ui/src/theme/themes/oc-2.json"
 
 const root = dirname(fileURLToPath(import.meta.url))
 const rendererRoot = join(root, "../renderer")
@@ -17,6 +20,11 @@ const notificationPermission = "notifications"
 const rendererPermissions = new Set([clipboardWritePermission, notificationPermission])
 const documentPolicyHeader = "Document-Policy"
 const jsCallStacksDocumentPolicy = "include-js-call-stacks-in-crash-reports"
+const oc2Theme = oc2ThemeJson as DesktopTheme
+const oc2Background = {
+  light: resolveThemeVariant(oc2Theme.light, false)["background-base"],
+  dark: resolveThemeVariant(oc2Theme.dark, true)["background-base"],
+}
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -46,6 +54,7 @@ export function setRelaunchHandler(handler: () => void) {
 
 export function setBackgroundColor(color: string) {
   backgroundColor = color
+  BrowserWindow.getAllWindows().forEach((win) => win.setBackgroundColor(color))
 }
 
 export function getBackgroundColor(): string | undefined {
@@ -63,6 +72,10 @@ function iconPath() {
 
 function tone() {
   return nativeTheme.shouldUseDarkColors ? "dark" : "light"
+}
+
+function defaultBackgroundColor() {
+  return oc2Background[tone()]
 }
 
 function overlay(theme: Partial<TitlebarTheme> = {}, zoom = 1) {
@@ -120,7 +133,7 @@ export function createMainWindow() {
     autoHideMenuBar: true,
     title: "OpenCode",
     icon: iconPath(),
-    backgroundColor,
+    backgroundColor: backgroundColor ?? defaultBackgroundColor(),
     ...(process.platform === "darwin"
       ? {
           titleBarStyle: "hidden" as const,
@@ -178,7 +191,7 @@ export function createLoadingWindow() {
     show: true,
     autoHideMenuBar: true,
     icon: iconPath(),
-    backgroundColor,
+    backgroundColor: backgroundColor ?? defaultBackgroundColor(),
     ...(process.platform === "darwin" ? { titleBarStyle: "hidden" as const } : {}),
     ...(process.platform === "win32"
       ? {
