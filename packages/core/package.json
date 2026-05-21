@@ -14,6 +14,12 @@
     "opencode": "./bin/opencode"
   },
   "exports": {
+    "./session": "./src/session/index.ts",
+    "./session/*": "./src/session/*.ts",
+    "./session-event": "./src/session/event.ts",
+    "./session-message": "./src/session/message.ts",
+    "./session-message-updater": "./src/session/message-updater.ts",
+    "./session-prompt": "./src/session/prompt.ts",
     "./*": "./src/*.ts"
   },
   "imports": {},
@@ -49,8 +55,10 @@
     "@aws-sdk/credential-providers": "3.993.0",
     "@effect/opentelemetry": "catalog:",
     "@effect/platform-node": "catalog:",
+    "@effect/sql-sqlite-bun": "catalog:",
     "@npmcli/arborist": "9.4.0",
     "@npmcli/config": "10.8.1",
+    "@opencode-ai/effect-drizzle-sqlite": "workspace:*",
     "@opentelemetry/api": "1.9.0",
     "@opentelemetry/context-async-hooks": "2.6.1",
     "@opentelemetry/exporter-trace-otlp-http": "0.214.0",
@@ -58,6 +66,7 @@
     "@openrouter/ai-sdk-provider": "2.8.1",
     "ai-gateway-provider": "3.1.2",
     "cross-spawn": "catalog:",
+    "drizzle-orm": "catalog:",
     "effect": "catalog:",
     "gitlab-ai-provider": "6.6.0",
     "glob": "13.0.5",
